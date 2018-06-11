@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour {
 
-
     [SerializeField]
     private float size = 1f;
 

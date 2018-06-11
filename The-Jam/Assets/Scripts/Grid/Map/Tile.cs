@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour {
 
-    private Vector3 position;
+    public Vector3 position;
+
+    public Tile() { }
+
+    public Tile(Vector3 position)
+    {
+        this.position = position;
+    }
 
 	// Use this for initialization
 	void Start () {
