@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-    public SimpleCords FocusTarget;
+    public Vector3 FocusTarget;
+    private Vector3 currFocus;
 
     private Vector3 ViewDirection;
 
+    private bool MovedToTarget = true;
+
+
+    
 	// Use this for initialization
 	void Start () {
-        FocusTarget = new SimpleCords(0, 0, 0);
+        FocusTarget = new Vector3(0, 0, 0);
         // TODO: Find a way to get the vector to the focuspoint
 
 	}
@@ -38,7 +43,7 @@ public class CameraController : MonoBehaviour {
                 direction = direction + new Vector3(1, 0,0);
             }
 
-            transform.Translate(direction * (Input.GetKey(KeyCode.LeftShift)?30:10) * Time.deltaTime);
+            transform.Translate(direction * (Input.GetKey(KeyCode.LeftShift)?30:10) * Time.deltaTime,Space.World);
         }
 
 
