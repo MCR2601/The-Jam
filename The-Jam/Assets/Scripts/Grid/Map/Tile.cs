@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour {
 
-    public Vector3 position;
 
-    public Tile() { }
+    public SimpleCords position;
 
-    public Tile(Vector3 position)
+
+
+
+
+
+    public Tile()
+    {
+
+    }
+
+    public Tile(SimpleCords position)
     {
         this.position = position;
     }

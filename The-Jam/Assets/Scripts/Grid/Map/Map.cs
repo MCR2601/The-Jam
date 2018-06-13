@@ -2,23 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Map : MonoBehaviour {
+public static class Map  {
 
-    public int mapXSize = 1;
+    const int RegionHeigh = 3;
+    const int RegionWidth = 5;
+    const int RegionLength = 5;
+    
+    public static Tile[,,] map;
+    
+    static Map()
+    {
+        
+    }
 
-    public int mapYSize = 1;
 
-    public int mapZSize = 1;
-
-    public Tile[,,] map;
-
-    // Use this for initialization
-    void Start () {
-        this.map = new Tile[mapXSize, mapYSize, mapZSize];
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
