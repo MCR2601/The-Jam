@@ -7,7 +7,7 @@ public class Tile : MonoBehaviour {
 
     public SimpleCords position;
 
-
+    public CoverData Cover;
 
 
 
