@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimpleCords {
+public struct SimpleCords {
 
     public int x;
     public int y;
@@ -53,6 +53,5 @@ public class SimpleCords {
     {
         return new SimpleCords(a.x - b.x, a.y - b.y, a.z - b.z);
     }
-
     
 }
