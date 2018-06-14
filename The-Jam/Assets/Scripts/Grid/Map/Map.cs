@@ -12,7 +12,14 @@ public static class Map  {
     
     static Map()
     {
-        
+        map = new Tile[5, 5, 1];
+        for (int x = 0; x < 5; x++)
+        {
+            for (int y = 0; y < 5; y++)
+            {
+                map[x, y, 0] = new Tile(new SimpleCords(x, y, 0));
+            }
+        }
     }
 
 

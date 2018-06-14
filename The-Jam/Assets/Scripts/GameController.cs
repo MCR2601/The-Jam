@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// this manages the entire game
+/// </summary>
 public class GameController : MonoBehaviour {
 
 	// Use this for initialization
