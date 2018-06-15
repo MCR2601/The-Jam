@@ -12,7 +12,7 @@ public static class Map  {
     
     static Map()
     {
-        map = new Tile[5, 5, 1];
+        map = new Tile[5, 5, 2];
         for (int x = 0; x < 5; x++)
         {
             for (int y = 0; y < 5; y++)
@@ -20,7 +20,24 @@ public static class Map  {
                 map[x, y, 0] = new Tile(new SimpleCords(x, y, 0));
             }
         }
+        map[2, 2, 1] = new Tile(new SimpleCords(2, 2, 1));
+
+        
+
     }
+
+    public static void Spawn()
+    {
+        foreach (Tile item in map)
+        {
+            if (item != null)
+            {
+                item.SpawnObject();
+            }
+        }
+    }
+
+
 
 
 }

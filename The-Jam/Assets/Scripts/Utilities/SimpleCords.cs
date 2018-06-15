@@ -31,12 +31,12 @@ public struct SimpleCords {
 
     public static implicit operator Vector3(SimpleCords simple)
     {
-        return new Vector3(simple.x, simple.y, simple.z);
+        return new Vector3(simple.x,  simple.z, simple.y);
     }
 
     public static implicit operator SimpleCords(Vector3 vec)
     {
-        return new SimpleCords((int)vec.x, (int)vec.y, (int)vec.z);
+        return new SimpleCords((int)vec.x,  (int)vec.z, (int)vec.y);
     }
 
     public SimpleCords Offset(int x, int y, int z)

@@ -4,7 +4,8 @@ using UnityEngine;
 
 
 public class Tile {
-    
+
+    GameObject myObject = null;
 
     public SimpleCords position;
 
@@ -26,5 +27,21 @@ public class Tile {
         Empty = false;
     }
 
+    public GameObject SpawnObject()
+    {
+        // currently just simple
+        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go.transform.position = position;
+
+        return go;
+    }
+
+    public void Kill()
+    {
+        if (myObject!=null)
+        {
+            GameObject.Destroy(myObject);
+        }
+    }
 
 }
