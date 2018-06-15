@@ -36,7 +36,18 @@ public static class Map  {
             }
         }
         UpdateCover();
+        UpdateTraversals();
         UpdateObjects();
+
+        foreach (Tile item in map)
+        {
+            if (item!=null)
+            {
+                Debug.Log("gonna do the lines now");
+                item.Traversals.SpawnDebugLines();
+            }
+        }
+
     }
 
     public static void UpdateCover()
@@ -56,6 +67,53 @@ public static class Map  {
 
     public static void UpdateTraversals()
     {
+        // currently you can only go up 1 layer and move straight
+
+        foreach (var item in map)
+        {
+            if (item!= null)
+            {
+                foreach (var side in item.Traversals.GetAsDictionary())
+                {
+                    Tile neighbour = GetLowestPassableNeighbour(item, side.Key);
+                    if (neighbour != null)
+                    {
+                        int difference = Mathf.Abs(neighbour.position.h - item.position.h);
+                        Debug.Log("Difference: " + difference);
+                        if (difference == 0)
+                        {
+                            item.Traversals[side.Key] = new Traversal(TraversalType.Walking, item, neighbour);
+                        }
+                        else
+                        {
+                            if (difference == 1)
+                            {
+                                item.Traversals[side.Key] = new Traversal(TraversalType.ClimbUp,item,neighbour);
+                            }
+                            else
+                            {
+                                if (difference == -1)
+                                {
+                                    item.Traversals[side.Key] = new Traversal(TraversalType.ClimbDown, item, neighbour);
+                                }
+                            }
+                        }    
+
+                    }
+                    else
+                    {
+                        Debug.LogError("no neighbour");
+                    }
+                }
+                
+
+            }
+
+        }
+
+
+
+
 
     }
 
@@ -95,7 +153,7 @@ public static class Map  {
     {
         try
         {
-            return map[cords.x, cords.y, cords.z];
+            return map[cords.x, cords.y, cords.h];
         }
         catch (System.IndexOutOfRangeException)
         {
@@ -138,6 +196,29 @@ public static class Map  {
             }
         }
         return type;
+    }
+
+    public static Tile GetLowestPassableNeighbour(Tile tile, Direction dir)
+    {
+        SimpleCords OtherCord = tile.position.GetInDirection(dir, 1);
+        
+        for (int h = 0; h < map.GetLength(2); h++)
+        {
+
+            Tile tmp = GetTileWithCords(new SimpleCords(OtherCord).Offset(0,0,h));
+            if (tmp != null)
+            {
+                if (tmp.Passable)
+                {
+                    return tmp;
+                }
+            }
+            else
+            {
+                Debug.LogError("We didnt find a tile");
+            }
+        }
+        return null;
     }
 
 }

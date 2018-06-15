@@ -32,6 +32,16 @@ public class TraversalData {
         South = new Traversal(TraversalType.None, location, null);
         West = new Traversal(TraversalType.None, Location, null);
     }
+    public Dictionary<Direction, Traversal> GetAsDictionary()
+    {
+        Dictionary<Direction, Traversal> dict = new Dictionary<Direction, Traversal>();
+        if(North != null)dict.Add(Direction.North, North);
+        if (East != null) dict.Add(Direction.East, East);
+        if (South != null) dict.Add(Direction.South, South);
+        if (West != null) dict.Add(Direction.West, West);
+        return dict;
+    }
+
 
     public Traversal this[Direction i]
     {
@@ -73,7 +83,22 @@ public class TraversalData {
         }
     }
 
+    public void SpawnDebugLines()
+    {
+        foreach (var item in GetAsDictionary())
+        {
+            if (item.Value.Type != TraversalType.None)
+            {
+                GameObject go = new GameObject();
 
+                LineRenderer lr = go.AddComponent<LineRenderer>();
+
+                lr.SetPositions(new Vector3[] { item.Value.TileFrom.position, item.Value.TileTo.position });
+            }
+            
+        }
+
+    }
 
 
 
