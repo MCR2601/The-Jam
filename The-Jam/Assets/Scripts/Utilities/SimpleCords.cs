@@ -22,12 +22,13 @@ public struct SimpleCords {
         this.z = z;
     }
 
-    public SimpleCords(Vector3 vec)
+    public SimpleCords(SimpleCords cords)
     {
-        this.x = (int)vec.x;
-        this.y = (int)vec.y;
-        this.z = (int)vec.z;
+        this.x = cords.x;
+        this.y = cords.y;
+        this.z = cords.z;
     }
+
 
     public static implicit operator Vector3(SimpleCords simple)
     {
@@ -41,7 +42,10 @@ public struct SimpleCords {
 
     public SimpleCords Offset(int x, int y, int z)
     {
-        return new SimpleCords(this.x + x, this.y + y, this.z + z);
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
     }
 
     public static SimpleCords operator +(SimpleCords a, SimpleCords b)

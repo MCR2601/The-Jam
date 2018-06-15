@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class Tile {
 
-    GameObject myObject = null;
+    public GameObject myObject = null;
 
     public SimpleCords position;
 
+    public TraversalData Traversals;
     public CoverData Cover;
 
     public bool Passable;
@@ -17,14 +18,16 @@ public class Tile {
 
     public Tile()
     {
-        
+        Traversals = new TraversalData(this);
+        Cover = new CoverData();
     }
 
-    public Tile(SimpleCords position)
+    public Tile(SimpleCords position):this()
     {
         this.position = position;
         Passable = true;
         Empty = false;
+        
     }
 
     public GameObject SpawnObject()
@@ -32,7 +35,7 @@ public class Tile {
         // currently just simple
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
         go.transform.position = position;
-
+        myObject = go;
         return go;
     }
 

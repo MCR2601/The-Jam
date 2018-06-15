@@ -16,6 +16,37 @@ public class CoverData {
         South = s;
         West = w;
     }
+
+    public CoverData()
+    {
+        North = CoverType.None;
+        East = CoverType.None;
+        South = CoverType.None;
+        West = CoverType.None;
+    }
+
+    public Dictionary<Direction,CoverType> GetAsDictionary()
+    {
+        Dictionary<Direction, CoverType> dict = new Dictionary<Direction, CoverType>();
+        dict.Add(Direction.North, North);
+        dict.Add(Direction.East, East);
+        dict.Add(Direction.South, South);
+        dict.Add(Direction.West, West);
+        return dict;
+    }
+
+    public int CoverValue()
+    {
+        int value = 0;
+
+        value += (int)North;
+        value += (int)East;
+        value += (int)West;
+        value += (int)South;
+
+        return value;
+    }
+
     /// <summary>
     /// returns a cover based on a Direction
     /// </summary>
