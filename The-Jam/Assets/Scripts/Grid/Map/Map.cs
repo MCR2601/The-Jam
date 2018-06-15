@@ -20,7 +20,7 @@ public static class Map  {
                 map[x, y, 0] = new Tile(new SimpleCords(x, y, 0));
             }
         }
-        map[2, 2, 1] = new Tile(new SimpleCords(2, 2, 1));
+        map[2, 2, 1] = new Tile(new SimpleCords(2, 1, 1));
 
         
 
