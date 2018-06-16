@@ -89,11 +89,33 @@ public class TraversalData {
         {
             if (item.Value.Type != TraversalType.None)
             {
+                Debug.Log("Traversal Something");
                 GameObject go = new GameObject();
 
                 LineRenderer lr = go.AddComponent<LineRenderer>();
 
-                lr.SetPositions(new Vector3[] { item.Value.TileFrom.position, item.Value.TileTo.position });
+                lr.material = new Material(Shader.Find("Sprites/Default"));
+
+                lr.startWidth = 0.3f;
+                lr.endWidth = 0.05f;
+
+                Color r = Color.red;
+                r.a = 255;
+                lr.startColor = r;
+
+                Color w = Color.white;
+                w.a = 255;
+                lr.endColor = w;
+
+                
+
+
+
+                lr.SetPositions(new Vector3[] { item.Value.TileFrom.position.GetAbove(), item.Value.TileTo.position.GetAbove() });
+            }
+            else
+            {
+                Debug.Log("Traversal None");
             }
             
         }

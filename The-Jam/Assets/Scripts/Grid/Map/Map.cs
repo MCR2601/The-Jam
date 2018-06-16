@@ -20,9 +20,15 @@ public static class Map  {
                 map[x, y, 0] = new Tile(new SimpleCords(x, y, 0)) { Passable = true,Empty=false};
             }
         }
-        map[1, 1, 1] = new Tile(new SimpleCords(1, 1, 1));
-        map[1, 1, 2] = new Tile(new SimpleCords(1, 1, 2));
-        map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable=false};
+
+        map[0, 2, 0] = new Tile(new SimpleCords(0, 2, 0)) { Passable = false};
+        map[0, 2, 1] = new Tile(new SimpleCords(0, 2, 1)) { Passable = false };
+        map[0, 2, 2] = new Tile(new SimpleCords(0, 2, 2)) { Passable = true };
+
+        map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = false};
+        map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = true };
+
+
 
     }
 
@@ -71,7 +77,7 @@ public static class Map  {
 
         foreach (var item in map)
         {
-            if (item!= null)
+            if (item!= null && item.Passable)
             {
                 foreach (var side in item.Traversals.GetAsDictionary())
                 {
@@ -97,8 +103,7 @@ public static class Map  {
                                     item.Traversals[side.Key] = new Traversal(TraversalType.ClimbDown, item, neighbour);
                                 }
                             }
-                        }    
-
+                        }
                     }
                     else
                     {
@@ -116,6 +121,12 @@ public static class Map  {
 
 
     }
+
+    public static void UpdatePassability()
+    {
+
+    }
+
 
     public static void UpdateObjects()
     {
@@ -205,10 +216,10 @@ public static class Map  {
         for (int h = 0; h < map.GetLength(2); h++)
         {
 
-            Tile tmp = GetTileWithCords(new SimpleCords(OtherCord).Offset(0,0,h));
+            Tile tmp = GetTileWithCords(new SimpleCords(OtherCord.x,OtherCord.y,h));
             if (tmp != null)
             {
-                if (tmp.Passable)
+                if (tmp.Passable == true)
                 {
                     return tmp;
                 }
