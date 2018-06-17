@@ -21,6 +21,11 @@ ModelImporter:
     100030: ShoulderRight
     100032: Torso
     100034: UpperBody
+    100036: HipLeft
+    100038: LeftShoulder
+    100040: LeftUpperArm
+    100042: RightShoulder
+    100044: Torsor
     400000: Armature
     400002: //RootNode
     400004: Head
@@ -39,6 +44,11 @@ ModelImporter:
     400030: ShoulderRight
     400032: Torso
     400034: UpperBody
+    400036: HipLeft
+    400038: LeftShoulder
+    400040: LeftUpperArm
+    400042: RightShoulder
+    400044: Torsor
     2100000: unnamed
     4300000: Torso
     7400000: Default Take
