@@ -26,7 +26,7 @@ public static class Map  {
         map[0, 2, 2] = new Tile(new SimpleCords(0, 2, 2)) { Passable = true };
 
         map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = false};
-        map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = true };
+        map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = false };
 
 
 
