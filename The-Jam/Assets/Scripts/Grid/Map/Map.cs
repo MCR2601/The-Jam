@@ -84,7 +84,7 @@ public static class Map  {
                     Tile neighbour = GetTraversabalTile(item, side.Key);
                     if (neighbour != null)
                     {
-                        int difference = Mathf.Abs(neighbour.position.h - item.position.h);
+                        int difference = neighbour.position.h - item.position.h;
                         Debug.Log("Difference: " + difference);
                         if (difference == 0)
                         {
@@ -101,6 +101,13 @@ public static class Map  {
                                 if (difference == -1)
                                 {
                                     item.Traversals[side.Key] = new Traversal(TraversalType.ClimbDown, item, neighbour);
+                                }
+                                else
+                                {
+                                    if (difference < -1)
+                                    {
+                                        item.Traversals[side.Key] = new Traversal(TraversalType.DropDown, item, neighbour);
+                                    }
                                 }
                             }
                         }
