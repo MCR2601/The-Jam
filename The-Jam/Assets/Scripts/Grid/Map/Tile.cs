@@ -14,7 +14,7 @@ public class Tile {
 
     public bool Passable;
 
-    public bool Empty;    
+    public bool Empty = false;    
 
     public Tile()
     {

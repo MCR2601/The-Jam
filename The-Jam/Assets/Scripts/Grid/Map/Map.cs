@@ -81,7 +81,7 @@ public static class Map  {
             {
                 foreach (var side in item.Traversals.GetAsDictionary())
                 {
-                    Tile neighbour = GetLowestPassableNeighbour(item, side.Key);
+                    Tile neighbour = GetTraversabalTile(item, side.Key);
                     if (neighbour != null)
                     {
                         int difference = Mathf.Abs(neighbour.position.h - item.position.h);
@@ -122,7 +122,7 @@ public static class Map  {
 
     }
 
-    public static void UpdatePassability()
+    public static void UpdateExistancePassability()
     {
 
     }
@@ -209,19 +209,23 @@ public static class Map  {
         return type;
     }
 
-    public static Tile GetLowestPassableNeighbour(Tile tile, Direction dir)
+    public static Tile GetTraversabalTile(Tile tile, Direction dir)
     {
-        SimpleCords OtherCord = tile.position.GetInDirection(dir, 1);
+        SimpleCords OtherCord = tile.position.GetInDirection(dir, 1).GetAbove();
         
-        for (int h = 0; h < map.GetLength(2); h++)
+        for (int h = OtherCord.h; h >= 0 ; h--)
         {
 
             Tile tmp = GetTileWithCords(new SimpleCords(OtherCord.x,OtherCord.y,h));
-            if (tmp != null)
+            if (tmp != null && tmp.Empty == false)
             {
                 if (tmp.Passable == true)
                 {
                     return tmp;
+                }
+                else
+                {
+                    return null;
                 }
             }
             else
