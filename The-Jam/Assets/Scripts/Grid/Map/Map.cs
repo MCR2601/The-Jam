@@ -12,7 +12,7 @@ public static class Map  {
     
     static Map()
     {
-        map = new Tile[5, 5, 3];
+        map = new Tile[5, 5, 4];
         for (int x = 0; x < 5; x++)
         {
             for (int y = 0; y < 5; y++)
@@ -22,11 +22,12 @@ public static class Map  {
         }
 
         map[0, 2, 0] = new Tile(new SimpleCords(0, 2, 0)) { Passable = false};
-        map[0, 2, 1] = new Tile(new SimpleCords(0, 2, 1)) { Passable = false };
-        map[0, 2, 2] = new Tile(new SimpleCords(0, 2, 2)) { Passable = true };
+        map[0, 2, 1] = new Tile(new SimpleCords(0, 2, 1)) { Passable = false};
+        map[0, 2, 2] = new Tile(new SimpleCords(0, 2, 2)) { Passable = false };
+        map[0, 2, 3] = new Tile(new SimpleCords(0, 2, 3)) { Passable = true };
 
         map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = false};
-        map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = false };
+        map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = true };
 
 
 

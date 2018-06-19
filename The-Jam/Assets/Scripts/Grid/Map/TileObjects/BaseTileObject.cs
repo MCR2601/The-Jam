@@ -25,6 +25,10 @@ public class BaseTileObject {
     /// </summary>
     public Tile ConnectedTile;
     /// <summary>
+    /// determins if this object is in the center or is shared with an other tile
+    /// </summary>
+    public bool isCenter;
+    /// <summary>
     /// Where the Object should be placed on the SourceTile
     /// </summary>
     public Positioning Position;
@@ -44,18 +48,41 @@ public class BaseTileObject {
     /// </summary>
     public TraversalType TraversalKind;
     
-    public BaseTileObject(Tile sourceTile, Tile connectedTile, Positioning position, CoverType solidity, TraversalType traversalKind)
+    public BaseTileObject(bool isCenter, CoverType solidity, TraversalType traversalKind)
     {
-        SourceTile = sourceTile;
-        ConnectedTile = connectedTile;
-        this.Position = position;
+        if (isCenter)
+        {
+            Position = Positioning.Center;
+            this.isCenter = isCenter;
+        }
+        else
+        {
+            this.isCenter = isCenter;
+        }
         Solidity = solidity;
         TraversalKind = traversalKind;
     }
 
+
+    public BaseTileObject Place(Tile source)
+    {
+        SourceTile = source;
+        return this;
+    }
+
+    public BaseTileObject Place(Tile source, Tile connected, Positioning pos)
+    {
+        SourceTile = source;
+        ConnectedTile = connected;
+        Position = pos;
+        
+        return this;
+    }
+
     public BaseTileObject Clone()
     {
-        
+        BaseTileObject temp = new BaseTileObject(isCenter, Solidity, TraversalKind);
+        return temp;
     }
 
 }

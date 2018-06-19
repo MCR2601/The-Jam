@@ -17,7 +17,6 @@ public class TileObjectData {
         Location = loc;
         Objects.AddRange(objects);
     }
-    
 
 
 
