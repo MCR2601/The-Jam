@@ -6,8 +6,16 @@ using UnityEngine;
 /// This class is for an object that exists on/between 1 or more Tiles
 /// This can be a tree, fence, small wall, high wall, etc...
 /// </summary>
-public class BaseTileObject  {
+public class BaseTileObject {
 
+    /// <summary>
+    /// this is the name of the displaymodel
+    /// </summary>
+    public string ModelName;
+    /// <summary>
+    /// If this object has a blocking hitbox
+    /// </summary>
+    public bool HasHitBox;
     /// <summary>
     /// This is the tile this is on
     /// </summary>
@@ -19,7 +27,7 @@ public class BaseTileObject  {
     /// <summary>
     /// Where the Object should be placed on the SourceTile
     /// </summary>
-    public Positioning position;
+    public Positioning Position;
     /// <summary>
     /// This shows how Solid this object is 
     /// None    -   This Object does neither has cover nor changes pathing
@@ -35,8 +43,19 @@ public class BaseTileObject  {
     /// This shows how this object should be traversed, if possible
     /// </summary>
     public TraversalType TraversalKind;
+    
+    public BaseTileObject(Tile sourceTile, Tile connectedTile, Positioning position, CoverType solidity, TraversalType traversalKind)
+    {
+        SourceTile = sourceTile;
+        ConnectedTile = connectedTile;
+        this.Position = position;
+        Solidity = solidity;
+        TraversalKind = traversalKind;
+    }
 
-
-
+    public BaseTileObject Clone()
+    {
+        
+    }
 
 }

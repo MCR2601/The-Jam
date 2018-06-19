@@ -7,13 +7,17 @@ using UnityEngine;
 /// </summary>
 public class TileObjectData {
 
-    public BaseTileObject North;
-    public BaseTileObject East;
-    public BaseTileObject South;
-    public BaseTileObject West;
+    public List<BaseTileObject> Objects = new List<BaseTileObject>();
+
+    public Tile Location;
 
 
-
+    public TileObjectData(Tile loc, params BaseTileObject[] objects)
+    {
+        Location = loc;
+        Objects.AddRange(objects);
+    }
+    
 
 
 
