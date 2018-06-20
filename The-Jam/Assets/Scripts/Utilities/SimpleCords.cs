@@ -80,6 +80,28 @@ public struct SimpleCords {
         }
     }
 
+    public override bool Equals(object obj)
+    {
+        if (!(obj is SimpleCords))
+        {
+            return false;
+        }
+
+        var cords = (SimpleCords)obj;
+        return x == cords.x &&
+               y == cords.y &&
+               h == cords.h;
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = 71122146;
+        hashCode = hashCode * -1521134295 + x.GetHashCode();
+        hashCode = hashCode * -1521134295 + y.GetHashCode();
+        hashCode = hashCode * -1521134295 + h.GetHashCode();
+        return hashCode;
+    }
+
     public static bool operator ==(SimpleCords a, SimpleCords b)
     {
         if (a.x != b.x)
@@ -114,5 +136,7 @@ public struct SimpleCords {
 
         return false;
     }
+
+
 
 }

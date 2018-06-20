@@ -13,6 +13,10 @@ public class BaseTileObject {
     /// </summary>
     public string ModelName;
     /// <summary>
+    /// For special models that have a center that is not directly where it will be placed
+    /// </summary>
+    public SimpleCords ModelOffset;
+    /// <summary>
     /// If this object has a blocking hitbox
     /// </summary>
     public bool HasHitBox;
@@ -83,5 +87,4 @@ public class BaseTileObject {
         BaseTileObject temp = new BaseTileObject(isCenter, Solidity, TraversalKind);
         return temp;
     }
-
 }
