@@ -63,7 +63,6 @@ public class BaseTileObject {
         TraversalKind = traversalKind;
     }
 
-
     public BaseTileObject Place(Tile source)
     {
         SourceTile = source;

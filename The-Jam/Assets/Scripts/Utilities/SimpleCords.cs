@@ -79,5 +79,40 @@ public struct SimpleCords {
                 return new SimpleCords(this).Offset(0, 0, 0);
         }
     }
-    
+
+    public static bool operator ==(SimpleCords a, SimpleCords b)
+    {
+        if (a.x != b.x)
+        {
+            return false;
+        }
+        if (a.y != b.y)
+        {
+            return false;
+        }
+        if (a.h != b.h)
+        {
+            return false;
+        }
+
+        return true;
+    }
+    public static bool operator !=(SimpleCords a, SimpleCords b)
+    {
+        if (a.x != b.x)
+        {
+            return true;
+        }
+        if (a.y != b.y)
+        {
+            return true;
+        }
+        if (a.h != b.h)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
 }
