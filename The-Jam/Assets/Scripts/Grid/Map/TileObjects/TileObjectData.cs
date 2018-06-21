@@ -63,5 +63,17 @@ public class TileObjectData {
         return GetHighestCoverInDirection((Direction)dir);
     }
 
+    public BaseTileObject PlaceObject(BaseTileObject obj, Tile Connected = null)
+    {
+        if (obj.isCenter)
+        {
+            obj.Place(Location);
+        }
+        else
+        {
+            obj.Place(Location, Connected);
+        }
+        return obj;
+    }
 
 }

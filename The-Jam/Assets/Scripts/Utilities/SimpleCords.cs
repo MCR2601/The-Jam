@@ -62,6 +62,11 @@ public struct SimpleCords {
     {
         return new SimpleCords(x, y, h + height);
     }
+    public SimpleCords GetBelow(int height = 1)
+    {
+        return new SimpleCords(x, y, h - height);
+    }
+
 
     public SimpleCords GetInDirection(Direction dir, int distance = 1)
     {
@@ -135,6 +140,35 @@ public struct SimpleCords {
         }
 
         return false;
+    }
+    /// <summary>
+    /// this methode returns the direction towards a different <see cref="SimpleCords"/>
+    /// </summary>
+    /// <param name="other">The other cord</param>
+    /// <returns>Direction to that other <see cref="SimpleCords"/></returns>
+    public Direction GetDirectionTo(SimpleCords other)
+    {
+        SimpleCords vector = other - this;
+
+        float angle = Mathf.Atan2(vector.x, vector.y);
+
+        if (angle < Mathf.PI/4 || angle > Mathf.PI/4 * 7)
+        {
+            return Direction.East;
+        }
+        if (angle > Mathf.PI/4 && angle < Mathf.PI/4 * 3)
+        {
+            return Direction.North;
+        }
+        if (angle > Mathf.PI/4 * 3 && angle < Mathf.PI/4 * 5)
+        {
+            return Direction.West;
+        }
+        if (angle > Mathf.PI/4 * 5 && angle < Mathf.PI/4 * 7)
+        {
+            return Direction.South;
+        }
+        return Direction.North;
     }
 
 

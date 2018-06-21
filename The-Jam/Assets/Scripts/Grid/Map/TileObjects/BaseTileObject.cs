@@ -7,7 +7,10 @@ using UnityEngine;
 /// This can be a tree, fence, small wall, high wall, etc...
 /// </summary>
 public class BaseTileObject {
-
+    /// <summary>
+    /// Stores the Name of the Object
+    /// </summary>
+    public string ObjectName;
     /// <summary>
     /// this is the name of the displaymodel
     /// </summary>
@@ -15,7 +18,7 @@ public class BaseTileObject {
     /// <summary>
     /// For special models that have a center that is not directly where it will be placed
     /// </summary>
-    public SimpleCords ModelOffset;
+    public Vector3 ModelOffset;
     /// <summary>
     /// If this object has a blocking hitbox
     /// </summary>
@@ -51,40 +54,64 @@ public class BaseTileObject {
     /// This shows how this object should be traversed, if possible
     /// </summary>
     public TraversalType TraversalKind;
-    
-    public BaseTileObject(bool isCenter, CoverType solidity, TraversalType traversalKind)
+
+    public BaseTileObject(string objectName, string modelName, Vector3 modelOffset, bool hasHitBox, bool isCenter, CoverType solidity, TraversalType traversalKind)
     {
-        if (isCenter)
-        {
-            Position = Positioning.Center;
-            this.isCenter = isCenter;
-        }
-        else
-        {
-            this.isCenter = isCenter;
-        }
+        ObjectName = objectName;
+        ModelName = modelName;
+        ModelOffset = modelOffset;
+        HasHitBox = hasHitBox;
+        this.isCenter = isCenter;
         Solidity = solidity;
         TraversalKind = traversalKind;
+        if (this.isCenter)
+        {
+            Position = Positioning.Center;
+        }
     }
 
     public BaseTileObject Place(Tile source)
     {
         SourceTile = source;
+        SpawnVisuals();
         return this;
     }
 
-    public BaseTileObject Place(Tile source, Tile connected, Positioning pos)
+    public BaseTileObject Place(Tile source, Tile connected)
     {
         SourceTile = source;
         ConnectedTile = connected;
-        Position = pos;
-        
+
+        Position = (Positioning)(int)source.position.GetDirectionTo(connected.position);
+        SpawnVisuals();
         return this;
     }
 
+    private void SpawnVisuals()
+    {
+        if (isCenter == true)
+        {
+            // we dont need any other location nor orientation
+            GameObject go = Resources.Load<GameObject>(ModelName);
+            go.transform.position = (Vector3)(SourceTile.position+new SimpleCords(0,0,1)) + ModelOffset;
+            GameObject.Instantiate(go);
+        }
+        else
+        {
+            // position is average of source and connected
+            GameObject go = Resources.Load<GameObject>(ModelName);
+            go.transform.position = ((Vector3)(SourceTile.position + ConnectedTile.position)) / 2 + new Vector3(0,1,0) + ModelOffset;
+
+            // orientation has to be Calculated based on direction
+            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x, 90 * (int)SourceTile.position.GetDirectionTo(ConnectedTile.position), 0);
+            GameObject.Instantiate(go);
+        }
+    }
+
+
     public BaseTileObject Clone()
     {
-        BaseTileObject temp = new BaseTileObject(isCenter, Solidity, TraversalKind);
+        BaseTileObject temp = new BaseTileObject(ObjectName,ModelName,ModelOffset,HasHitBox,isCenter,Solidity,TraversalKind);
         return temp;
     }
 }

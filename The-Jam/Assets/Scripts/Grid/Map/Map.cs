@@ -28,8 +28,10 @@ public static class Map  {
 
         map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = false};
         map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = true };
+        map[1, 2, 1].TileObjects.PlaceObject(ObjectBox.GetObjectByName("CoverPartial"));
 
-
+        map[1, 3, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"),map[2,3,0]);
+        map[1, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"), map[2, 4, 0]);
 
     }
 
@@ -71,7 +73,9 @@ public static class Map  {
             }
         }
     }
-
+    /// <summary>
+    /// Updates the traversals
+    /// </summary>
     public static void UpdateTraversals()
     {
         // currently you can only go up 1 layer and move straight
@@ -135,7 +139,9 @@ public static class Map  {
 
     }
 
-
+    /// <summary>
+    /// Updates Object color
+    /// </summary>
     public static void UpdateObjects()
     {
         foreach (Tile item in map)
@@ -185,6 +191,10 @@ public static class Map  {
         CoverType type = CoverType.None;
         if (origin.Passable)
         {
+            if (origin.TileObjects.GetHighestCoverInDirection(dir)>0)
+            {
+                return origin.TileObjects.GetHighestCoverInDirection(dir);
+            }
             SimpleCords location = new SimpleCords(origin.position);
             switch (dir)
             {
@@ -203,16 +213,26 @@ public static class Map  {
                 default:
                     break;
             }
+            // first check if we get cover from an an other tile
             Tile workTile = GetTileWithCords(location.Offset(0, 0, 1));
             if (workTile!=null && !workTile.Empty)
             {
                 type = CoverType.Partial;
+                return type;
             }
             workTile = GetTileWithCords(location.Offset(0, 0, 1));
             if (workTile != null && !workTile.Empty)
             {
                 type = CoverType.Full;
+                return type;
             }
+            // check for cover from the tile next to us
+            workTile = GetTileWithCords(location.Offset(0, 0, 1));
+            if (workTile != null && !workTile.Empty)
+            {
+                return workTile.TileObjects.GetHighestCoverInDirection(dir + 2 % 4);
+            }
+            
         }
         return type;
     }

@@ -11,6 +11,7 @@ public class Tile {
 
     public TraversalData Traversals;
     public CoverData Cover;
+    public TileObjectData TileObjects;
 
     public bool Passable;
 
@@ -20,6 +21,7 @@ public class Tile {
     {
         Traversals = new TraversalData(this);
         Cover = new CoverData();
+        TileObjects = new TileObjectData(this);
     }
 
     public Tile(SimpleCords position):this()
