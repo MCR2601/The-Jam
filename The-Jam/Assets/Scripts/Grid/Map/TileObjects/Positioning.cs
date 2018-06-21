@@ -8,5 +8,5 @@ public enum Positioning
     East,
     South,
     West,
-    Center,
+    Center
 }
