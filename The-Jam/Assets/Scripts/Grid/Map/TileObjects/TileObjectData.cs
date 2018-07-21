@@ -38,6 +38,23 @@ public class TileObjectData {
         }
     }
 
+    public bool ObstructsTile()
+    {
+        foreach (var item in Objects)
+        {
+            if (item != null)
+            {
+                Debug.Log("Object Debug");
+                if (item.Position == Positioning.Center && item.Solidity == CoverType.Partial)
+                {
+                    Debug.Log("Obstructing Object found");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public CoverType GetHighestCoverInDirection(Direction dir)
     {
         int highest = 0;
@@ -55,7 +72,6 @@ public class TileObjectData {
                 }
             }
         }
-
         return (CoverType)highest;
     }
     public CoverType GetHighestCoverInDirection(int dir)
@@ -73,6 +89,7 @@ public class TileObjectData {
         {
             obj.Place(Location, Connected);
         }
+        Objects.Add(obj);
         return obj;
     }
 

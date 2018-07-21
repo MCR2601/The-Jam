@@ -171,6 +171,9 @@ public struct SimpleCords {
         return Direction.North;
     }
 
-
+    public override string ToString()
+    {
+        return "{"+x+","+y+","+h+"}";
+    }
 
 }

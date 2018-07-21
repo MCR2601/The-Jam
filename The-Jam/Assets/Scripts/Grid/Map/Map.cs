@@ -21,17 +21,20 @@ public static class Map  {
             }
         }
 
-        map[0, 2, 0] = new Tile(new SimpleCords(0, 2, 0)) { Passable = false};
-        map[0, 2, 1] = new Tile(new SimpleCords(0, 2, 1)) { Passable = false};
-        map[0, 2, 2] = new Tile(new SimpleCords(0, 2, 2)) { Passable = false };
+        map[0, 2, 0] = new Tile(new SimpleCords(0, 2, 0)) { Passable = true };
+        map[0, 2, 1] = new Tile(new SimpleCords(0, 2, 1)) { Passable = true };
+        map[0, 2, 2] = new Tile(new SimpleCords(0, 2, 2)) { Passable = true };
         map[0, 2, 3] = new Tile(new SimpleCords(0, 2, 3)) { Passable = true };
 
-        map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = false};
+        map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = true };
         map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = true };
         map[1, 2, 1].TileObjects.PlaceObject(ObjectBox.GetObjectByName("CoverPartial"));
 
         map[1, 3, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"),map[2,3,0]);
         map[1, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"), map[2, 4, 0]);
+
+        map[4, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallLow"), map[4, 3, 0]);
+
 
     }
 
@@ -44,6 +47,8 @@ public static class Map  {
                 item.SpawnObject();
             }
         }
+
+        UpdateExistancePassability();
         UpdateCover();
         UpdateTraversals();
         UpdateObjects();
@@ -82,12 +87,12 @@ public static class Map  {
 
         foreach (var item in map)
         {
-            if (item!= null && item.Passable)
+            if (item!= null && item.UnObstructed)
             {
                 foreach (var side in item.Traversals.GetAsDictionary())
                 {
                     Tile neighbour = GetTraversabalTile(item, side.Key);
-                    if (neighbour != null)
+                    if (neighbour != null && neighbour.UnObstructed)
                     {
                         int difference = neighbour.position.h - item.position.h;
                         Debug.Log("Difference: " + difference);
@@ -121,22 +126,33 @@ public static class Map  {
                     {
                         Debug.LogError("no neighbour");
                     }
-                }
-                
-
+                }             
             }
-
         }
-
-
-
-
-
     }
 
     public static void UpdateExistancePassability()
     {
+        foreach (Tile item in map)
+        {
+            if (item != null)
+            {
+                item.UnObstructed = item.Passable;
 
+                if (item.UnObstructed)
+                {
+                    item.UnObstructed = !item.TileObjects.ObstructsTile();
+                    if (item.UnObstructed)
+                    {
+                        if (GetTileWithCords(item.position.GetAbove()) != null || GetTileWithCords(item.position.GetAbove(2) )!= null)
+                        {
+                            item.UnObstructed = false;
+                            Debug.Log("Found obstructed Tile " + item.position);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -189,12 +205,10 @@ public static class Map  {
     private static CoverType CheckCover(Tile origin, Direction dir)
     {
         CoverType type = CoverType.None;
-        if (origin.Passable)
+        if (origin.UnObstructed)
         {
-            if (origin.TileObjects.GetHighestCoverInDirection(dir)>0)
-            {
-                return origin.TileObjects.GetHighestCoverInDirection(dir);
-            }
+            type = origin.TileObjects.GetHighestCoverInDirection(dir);
+
             SimpleCords location = new SimpleCords(origin.position);
             switch (dir)
             {
@@ -217,13 +231,11 @@ public static class Map  {
             Tile workTile = GetTileWithCords(location.Offset(0, 0, 1));
             if (workTile!=null && !workTile.Empty)
             {
-                type = CoverType.Partial;
-                return type;
+                type.AddUp(CoverType.Partial);
             }
             workTile = GetTileWithCords(location.Offset(0, 0, 1));
             if (workTile != null && !workTile.Empty)
             {
-                type = CoverType.Full;
                 return type;
             }
             // check for cover from the tile next to us

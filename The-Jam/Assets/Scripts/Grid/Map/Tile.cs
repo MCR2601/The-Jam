@@ -9,25 +9,55 @@ public class Tile {
 
     public SimpleCords position;
 
+    /// <summary>
+    /// This is a storage Variable that should allways represent every possible move
+    /// </summary>
     public TraversalData Traversals;
+    /// <summary>
+    /// this is a variable only used after calculating and does not keep up to date without calling an update
+    /// </summary>
     public CoverData Cover;
+    /// <summary>
+    /// This is a storage Variable that shows the IS state
+    /// </summary>
     public TileObjectData TileObjects;
-
+    /// <summary>
+    /// defines if this tile Passable in general. 
+    /// </summary>
+    /// <remarks>
+    /// this does not update and is used as the basestate of the Tile.
+    /// </remarks>
     public bool Passable;
+    /// <summary>
+    /// shows if it is possible to enter this Tile. 
+    /// </summary>
+    /// <remarks>
+    /// every Tile can be made Obstructed by stacking another one above
+    /// </remarks>
+    public bool UnObstructed;
 
+    /// <summary>
+    /// used to define an empty tile with nothing there, not used
+    /// </summary>
     public bool Empty = false;    
-
+    /// <summary>
+    /// basic init
+    /// </summary>
     public Tile()
     {
         Traversals = new TraversalData(this);
         Cover = new CoverData();
         TileObjects = new TileObjectData(this);
     }
-
+    /// <summary>
+    /// basic init with position
+    /// </summary>
+    /// <param name="position">position of this Tile</param>
     public Tile(SimpleCords position):this()
     {
         this.position = position;
         Passable = true;
+        UnObstructed = true;
         Empty = false;
         
     }

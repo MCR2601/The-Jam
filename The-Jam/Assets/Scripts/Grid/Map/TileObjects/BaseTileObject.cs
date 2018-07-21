@@ -93,18 +93,19 @@ public class BaseTileObject {
         {
             // we dont need any other location nor orientation
             GameObject go = Resources.Load<GameObject>(ModelName);
+            go = GameObject.Instantiate(go);
             go.transform.position = (Vector3)(SourceTile.position+new SimpleCords(0,0,1)) + ModelOffset;
-            GameObject.Instantiate(go);
+            
         }
         else
         {
             // position is average of source and connected
             GameObject go = Resources.Load<GameObject>(ModelName);
+            go = GameObject.Instantiate(go);
             go.transform.position = ((Vector3)(SourceTile.position + ConnectedTile.position)) / 2 + new Vector3(0,1,0) + ModelOffset;
 
             // orientation has to be Calculated based on direction
-            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x, 90 * (int)SourceTile.position.GetDirectionTo(ConnectedTile.position), 0);
-            GameObject.Instantiate(go);
+            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x,  go.transform.rotation.eulerAngles.y + 90 * ((int)SourceTile.position.GetDirectionTo(ConnectedTile.position)), 0);
         }
     }
 
