@@ -89,7 +89,7 @@ public class TraversalData {
         {
             if (item.Value.Type != TraversalType.None)
             {
-                Debug.Log("Traversal Something");
+                //Debug.Log("Traversal Something");
                 GameObject go = new GameObject();
 
                 LineRenderer lr = go.AddComponent<LineRenderer>();
@@ -147,7 +147,7 @@ public class TraversalData {
             }
             else
             {
-                Debug.Log("Traversal None");
+                //Debug.Log("Traversal None");
             }
             
         }

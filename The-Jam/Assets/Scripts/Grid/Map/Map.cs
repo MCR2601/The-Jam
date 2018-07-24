@@ -35,6 +35,7 @@ public static class Map  {
 
         map[4, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallLow"), map[4, 3, 0]);
 
+        map[3, 1, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("CoverPartial"));
 
     }
 
@@ -57,7 +58,7 @@ public static class Map  {
         {
             if (item!=null)
             {
-                Debug.Log("gonna do the lines now");
+                //Debug.Log("gonna do the lines now");
                 item.Traversals.SpawnDebugLines();
             }
         }
@@ -169,12 +170,12 @@ public static class Map  {
                 {
                     if (item.Cover.CoverValue()>1)
                     {
-                        Debug.Log("There should be a colorchange");
+                        //Debug.Log("There should be a colorchange");
                         item.myObject.GetComponent<MeshRenderer>().material.color = Color.blue;
                     }
                     else
                     {
-                        Debug.Log("There should be a colorchange");
+                        //Debug.Log("There should be a colorchange");
                         item.myObject.GetComponent<MeshRenderer>().material.color = Color.red;
                     }
                     
@@ -204,49 +205,28 @@ public static class Map  {
 
     private static CoverType CheckCover(Tile origin, Direction dir)
     {
-        CoverType type = CoverType.None;
+        int coverValue = 0;
         if (origin.UnObstructed)
         {
-            type = origin.TileObjects.GetHighestCoverInDirection(dir);
+            // cover provided by the origin itself
+            int thisCover = (int)origin.TileObjects.CoverProvided(dir, true);
 
-            SimpleCords location = new SimpleCords(origin.position);
-            switch (dir)
+            // search for the highest Tile avaiable in that direction (max height 2)
+            SimpleCords otherCords = origin.position.GetInDirection(dir, 1);
+            int otherCover = 0;
+            for (int h = 2; h >=0 ; h--)
             {
-                case Direction.North:
-                    location.Offset(0, 1, 0);
-                    break;
-                case Direction.East:
-                    location.Offset(1, 0, 0);
-                    break;
-                case Direction.South:
-                    location.Offset(0, -1, 0);
-                    break;
-                case Direction.West:
-                    location.Offset(-1, 0, 0);
-                    break;
-                default:
-                    break;
+                Tile tmp = GetTileWithCords(new SimpleCords(otherCords.x, otherCords.y, otherCords.h + h));
+                if (tmp != null)
+                {
+                    otherCover = (int)tmp.ProvidesCoverToTile(origin.position);
+                    h = -1;
+                }
             }
-            // first check if we get cover from an an other tile
-            Tile workTile = GetTileWithCords(location.Offset(0, 0, 1));
-            if (workTile!=null && !workTile.Empty)
-            {
-                type.AddUp(CoverType.Partial);
-            }
-            workTile = GetTileWithCords(location.Offset(0, 0, 1));
-            if (workTile != null && !workTile.Empty)
-            {
-                return type;
-            }
-            // check for cover from the tile next to us
-            workTile = GetTileWithCords(location.Offset(0, 0, 1));
-            if (workTile != null && !workTile.Empty)
-            {
-                return workTile.TileObjects.GetHighestCoverInDirection(dir + 2 % 4);
-            }
-            
+            coverValue = Mathf.Max(thisCover, otherCover);
         }
-        return type;
+        coverValue = Mathf.Min(coverValue,2);
+        return (CoverType)coverValue;
     }
 
     public static Tile GetTraversabalTile(Tile tile, Direction dir)

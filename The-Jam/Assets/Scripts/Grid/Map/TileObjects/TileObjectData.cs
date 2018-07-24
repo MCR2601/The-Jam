@@ -32,7 +32,7 @@ public class TileObjectData {
         }
         else
         {
-            directionIn = (Direction)((((int)directionIn) + 2) % 4);
+            directionIn.Invert();
             // somebody else is checking
             return GetHighestCoverInDirection(directionIn);
         }
@@ -63,7 +63,7 @@ public class TileObjectData {
         {
             foreach (var item in Objects)
             {
-                if (pos == item.Position)
+                if (pos == item.Position || item.Position == Positioning.Center)
                 {
                     if ((int)item.Solidity>highest)
                     {
@@ -92,5 +92,6 @@ public class TileObjectData {
         Objects.Add(obj);
         return obj;
     }
+
 
 }

@@ -78,5 +78,28 @@ public class Tile {
             GameObject.Destroy(myObject);
         }
     }
+    /// <summary>
+    /// This methode calculates how much cover this tile provides to another Tile
+    /// </summary>
+    /// <returns></returns>
+    public CoverType ProvidesCoverToTile(SimpleCords otherTileLocation)
+    {
+        int coverValue = 0;
+
+        Direction thisDir = position.GetDirectionTo(otherTileLocation);
+
+        int heightDifference = position.h - otherTileLocation.h;
+
+        CoverType objectcoverToOtherTile = TileObjects.CoverProvided(thisDir,true);
+
+        coverValue = heightDifference + (int)objectcoverToOtherTile;
+        coverValue = Mathf.Min(coverValue, 2);
+
+        if (coverValue<=0)
+        {
+            return CoverType.None;
+        }
+        return (CoverType)coverValue;
+    }
 
 }
