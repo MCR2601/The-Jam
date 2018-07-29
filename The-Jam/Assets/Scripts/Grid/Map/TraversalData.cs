@@ -89,7 +89,7 @@ public class TraversalData {
         {
             if (item.Value.Type != TraversalType.None)
             {
-                Debug.Log("Traversal Something");
+                //Debug.Log("Traversal Something");
                 GameObject go = new GameObject();
 
                 LineRenderer lr = go.AddComponent<LineRenderer>();
@@ -99,7 +99,40 @@ public class TraversalData {
                 lr.startWidth = 0.3f;
                 lr.endWidth = 0.05f;
 
-                Color r = Color.red;
+                Color r = Color.black;
+
+                switch (item.Value.Type)
+                {
+                    case TraversalType.None:
+                        break;
+                    case TraversalType.Walking:
+                        r = Color.cyan;
+                        break;
+                    case TraversalType.Vault:
+                        r = Color.yellow;
+                        break;
+                    case TraversalType.ClimbUp:
+                        r = Color.red;
+                        break;
+                    case TraversalType.ClimbDown:
+                        r = Color.green;
+                        break;
+                    case TraversalType.Door:
+                        break;
+                    case TraversalType.Window:
+                        break;
+                    case TraversalType.LadderUp:
+                        break;
+                    case TraversalType.LadderDown:
+                        break;
+                    case TraversalType.DropDown:
+                        r = Color.blue;
+                        break;
+                    default:
+                        break;
+                }
+
+                
                 r.a = 255;
                 lr.startColor = r;
 
@@ -115,7 +148,7 @@ public class TraversalData {
             }
             else
             {
-                Debug.Log("Traversal None");
+                //Debug.Log("Traversal None");
             }
             
         }

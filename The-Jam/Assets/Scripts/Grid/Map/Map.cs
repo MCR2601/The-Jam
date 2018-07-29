@@ -12,7 +12,7 @@ public static class Map  {
     
     static Map()
     {
-        map = new Tile[5, 5, 3];
+        map = new Tile[5, 5, 4];
         for (int x = 0; x < 5; x++)
         {
             for (int y = 0; y < 5; y++)
@@ -21,14 +21,23 @@ public static class Map  {
             }
         }
 
-        map[0, 2, 0] = new Tile(new SimpleCords(0, 2, 0)) { Passable = false};
-        map[0, 2, 1] = new Tile(new SimpleCords(0, 2, 1)) { Passable = false };
+        map[0, 2, 0] = new Tile(new SimpleCords(0, 2, 0)) { Passable = true };
+        map[0, 2, 1] = new Tile(new SimpleCords(0, 2, 1)) { Passable = true };
         map[0, 2, 2] = new Tile(new SimpleCords(0, 2, 2)) { Passable = true };
+        map[0, 2, 3] = new Tile(new SimpleCords(0, 2, 3)) { Passable = true };
 
-        map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = false};
+        map[1, 1, 1] = new Tile(new SimpleCords(1, 1, 1)) { Passable = true };
+
+        map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = true };
         map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = true };
+        map[1, 2, 1].TileObjects.PlaceObject(ObjectBox.GetObjectByName("CoverPartial"));
 
+        map[1, 3, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"),Positioning.West);
+        map[1, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"),  Positioning.West);
 
+        map[4, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallLow"), Positioning.South);
+
+        map[3, 1, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("CoverPartial"));
 
     }
 
@@ -41,6 +50,10 @@ public static class Map  {
                 item.SpawnObject();
             }
         }
+
+        Direction d = Direction.South;
+
+        UpdateExistancePassability();
         UpdateCover();
         UpdateTraversals();
         UpdateObjects();
@@ -49,7 +62,7 @@ public static class Map  {
         {
             if (item!=null)
             {
-                Debug.Log("gonna do the lines now");
+                //Debug.Log("gonna do the lines now");
                 item.Traversals.SpawnDebugLines();
             }
         }
@@ -70,37 +83,70 @@ public static class Map  {
             }
         }
     }
-
+    /// <summary>
+    /// Updates the traversals
+    /// </summary>
     public static void UpdateTraversals()
     {
         // currently you can only go up 1 layer and move straight
 
         foreach (var item in map)
         {
-            if (item!= null && item.Passable)
+            if (item!= null && item.UnObstructed)
             {
                 foreach (var side in item.Traversals.GetAsDictionary())
                 {
-                    Tile neighbour = GetLowestPassableNeighbour(item, side.Key);
-                    if (neighbour != null)
+                    Tile neighbour = GetTraversabalTile(item, side.Key);
+                    if (neighbour != null && neighbour.UnObstructed)
                     {
-                        int difference = Mathf.Abs(neighbour.position.h - item.position.h);
-                        Debug.Log("Difference: " + difference);
-                        if (difference == 0)
+                        int difference = neighbour.position.h - item.position.h;
+
+                        // check if Traversal is legal by checking the TileObjects and its solidity
+
+                        int myCover = (int)item.TileObjects.CoverProvided(side.Key, true);
+                        int otherCover = (int)neighbour.TileObjects.CoverProvided(side.Key,false);
+
+                        if (otherCover == 2 || myCover == 2)
                         {
-                            item.Traversals[side.Key] = new Traversal(TraversalType.Walking, item, neighbour);
+                            // no traversal possible
+                            item.Traversals[side.Key] = new Traversal( TraversalType.None,item,neighbour);
                         }
                         else
                         {
-                            if (difference == 1)
+                            if (difference == 1 && otherCover == 0 && myCover == 0)
                             {
-                                item.Traversals[side.Key] = new Traversal(TraversalType.ClimbUp,item,neighbour);
+                                // just climb up
+                                item.Traversals[side.Key] = new Traversal(TraversalType.ClimbUp,item,neighbour);                                
                             }
                             else
                             {
-                                if (difference == -1)
+                                if (difference == 0)
                                 {
-                                    item.Traversals[side.Key] = new Traversal(TraversalType.ClimbDown, item, neighbour);
+                                    // flat ground, just check for vaults or stuff
+                                    if (otherCover == 1 || myCover == 1)
+                                    {
+                                        item.Traversals[side.Key] = new Traversal(TraversalType.Vault, item, neighbour);
+                                    }
+                                    else
+                                    {
+                                        item.Traversals[side.Key] = new Traversal(TraversalType.Walking, item, neighbour);
+                                    }
+                                }
+                                else
+                                {
+                                    if (difference == -1)
+                                    {
+                                        // climb down 1
+                                        item.Traversals[side.Key] = new Traversal(TraversalType.ClimbDown, item, neighbour);
+                                    }
+                                    else
+                                    {
+                                        if (difference < -1)
+                                        {
+                                            // drop down
+                                            item.Traversals[side.Key] = new Traversal(TraversalType.DropDown, item, neighbour);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -109,25 +155,38 @@ public static class Map  {
                     {
                         Debug.LogError("no neighbour");
                     }
-                }
-                
-
+                }             
             }
-
         }
-
-
-
-
-
     }
 
-    public static void UpdatePassability()
+    public static void UpdateExistancePassability()
     {
+        foreach (Tile item in map)
+        {
+            if (item != null)
+            {
+                item.UnObstructed = item.Passable;
 
+                if (item.UnObstructed)
+                {
+                    item.UnObstructed = !item.TileObjects.ObstructsTile();
+                    if (item.UnObstructed)
+                    {
+                        if (GetTileWithCords(item.position.GetAbove()) != null || GetTileWithCords(item.position.GetAbove(2) )!= null)
+                        {
+                            item.UnObstructed = false;
+                            Debug.Log("Found obstructed Tile " + item.position);
+                        }
+                    }
+                }
+            }
+        }
     }
 
-
+    /// <summary>
+    /// Updates Object color
+    /// </summary>
     public static void UpdateObjects()
     {
         foreach (Tile item in map)
@@ -139,12 +198,12 @@ public static class Map  {
                 {
                     if (item.Cover.CoverValue()>1)
                     {
-                        Debug.Log("There should be a colorchange");
+                        //Debug.Log("There should be a colorchange");
                         item.myObject.GetComponent<MeshRenderer>().material.color = Color.blue;
                     }
                     else
                     {
-                        Debug.Log("There should be a colorchange");
+                        //Debug.Log("There should be a colorchange");
                         item.myObject.GetComponent<MeshRenderer>().material.color = Color.red;
                     }
                     
@@ -174,54 +233,47 @@ public static class Map  {
 
     private static CoverType CheckCover(Tile origin, Direction dir)
     {
-        CoverType type = CoverType.None;
-        if (origin.Passable)
+        int coverValue = 0;
+        if (origin.UnObstructed)
         {
-            SimpleCords location = new SimpleCords(origin.position);
-            switch (dir)
+            // cover provided by the origin itself
+            int thisCover = (int)origin.TileObjects.CoverProvided(dir, true);
+
+            // search for the highest Tile avaiable in that direction (max height 2)
+            SimpleCords otherCords = origin.position.GetInDirection(dir, 1);
+            int otherCover = 0;
+            for (int h = 2; h >=0 ; h--)
             {
-                case Direction.North:
-                    location.Offset(0, 1, 0);
-                    break;
-                case Direction.East:
-                    location.Offset(1, 0, 0);
-                    break;
-                case Direction.South:
-                    location.Offset(0, -1, 0);
-                    break;
-                case Direction.West:
-                    location.Offset(-1, 0, 0);
-                    break;
-                default:
-                    break;
+                Tile tmp = GetTileWithCords(new SimpleCords(otherCords.x, otherCords.y, otherCords.h + h));
+                if (tmp != null)
+                {
+                    otherCover = (int)tmp.ProvidesCoverToTile(origin.position);
+                    h = -1;
+                }
             }
-            Tile workTile = GetTileWithCords(location.Offset(0, 0, 1));
-            if (workTile!=null && !workTile.Empty)
-            {
-                type = CoverType.Partial;
-            }
-            workTile = GetTileWithCords(location.Offset(0, 0, 1));
-            if (workTile != null && !workTile.Empty)
-            {
-                type = CoverType.Full;
-            }
+            coverValue = Mathf.Max(thisCover, otherCover);
         }
-        return type;
+        coverValue = Mathf.Min(coverValue,2);
+        return (CoverType)coverValue;
     }
 
-    public static Tile GetLowestPassableNeighbour(Tile tile, Direction dir)
+    public static Tile GetTraversabalTile(Tile tile, Direction dir)
     {
-        SimpleCords OtherCord = tile.position.GetInDirection(dir, 1);
+        SimpleCords OtherCord = tile.position.GetInDirection(dir, 1).GetAbove();
         
-        for (int h = 0; h < map.GetLength(2); h++)
+        for (int h = OtherCord.h; h >= 0 ; h--)
         {
 
             Tile tmp = GetTileWithCords(new SimpleCords(OtherCord.x,OtherCord.y,h));
-            if (tmp != null)
+            if (tmp != null && tmp.Empty == false)
             {
                 if (tmp.Passable == true)
                 {
                     return tmp;
+                }
+                else
+                {
+                    return null;
                 }
             }
             else

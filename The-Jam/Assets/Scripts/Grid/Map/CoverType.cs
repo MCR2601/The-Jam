@@ -10,14 +10,14 @@ public enum CoverType
     /// <summary>
     /// stands in the open field
     /// </summary>
-    None,
+    None = 0,
     /// <summary>
     /// Low Wall, Fence, fallen Tree,...
     /// </summary>
-    Partial,
+    Partial = 1,
     /// <summary>
     /// Wall, normal Tree
     /// </summary>
-    Full
+    Full = 2
 
 }

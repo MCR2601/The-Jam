@@ -39,10 +39,7 @@ public class CoverData {
     {
         int value = 0;
 
-        value += (int)North;
-        value += (int)East;
-        value += (int)West;
-        value += (int)South;
+        value = Mathf.Max((int)North, (int)East, (int)South, (int)West);
 
         return value;
     }
