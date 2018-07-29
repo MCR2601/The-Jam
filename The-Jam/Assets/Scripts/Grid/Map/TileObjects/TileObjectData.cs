@@ -32,9 +32,8 @@ public class TileObjectData {
         }
         else
         {
-            directionIn.Invert();
             // somebody else is checking
-            return GetHighestCoverInDirection(directionIn);
+            return GetHighestCoverInDirection(directionIn.Invert());
         }
     }
 
@@ -79,9 +78,9 @@ public class TileObjectData {
         return GetHighestCoverInDirection((Direction)dir);
     }
 
-    public BaseTileObject PlaceObject(BaseTileObject obj, Tile Connected = null)
+    public BaseTileObject PlaceObject(BaseTileObject obj, Positioning Connected = Positioning.Center)
     {
-        if (obj.isCenter)
+        if (Connected == Positioning.Center)
         {
             obj.Place(Location);
         }
@@ -93,5 +92,21 @@ public class TileObjectData {
         return obj;
     }
 
+    public BaseTileObject[] GetAllObjectsInDirection(Direction dir)
+    {
+        List<BaseTileObject> obj = new List<BaseTileObject>();
+
+        foreach (var item in Objects)
+        {
+            if (item != null)
+            {
+                if ((int)item.Position == (int)dir)
+                {
+                    obj.Add(item);
+                }
+            }
+        }
+        return obj.ToArray();
+    }
 
 }

@@ -28,10 +28,6 @@ public class BaseTileObject {
     /// </summary>
     public Tile SourceTile;
     /// <summary>
-    /// This is the tile which shares this object, if avaiable. (e.g.: walls or fences)
-    /// </summary>
-    public Tile ConnectedTile;
-    /// <summary>
     /// determins if this object is in the center or is shared with an other tile
     /// </summary>
     public bool isCenter;
@@ -77,12 +73,11 @@ public class BaseTileObject {
         return this;
     }
 
-    public BaseTileObject Place(Tile source, Tile connected)
+    public BaseTileObject Place(Tile source, Positioning direction)
     {
         SourceTile = source;
-        ConnectedTile = connected;
 
-        Position = (Positioning)(int)source.position.GetDirectionTo(connected.position);
+        Position = direction;
         SpawnVisuals();
         return this;
     }
@@ -102,10 +97,10 @@ public class BaseTileObject {
             // position is average of source and connected
             GameObject go = Resources.Load<GameObject>(ModelName);
             go = GameObject.Instantiate(go);
-            go.transform.position = ((Vector3)(SourceTile.position + ConnectedTile.position)) / 2 + new Vector3(0,1,0) + ModelOffset;
+            go.transform.position = ((Vector3)(SourceTile.position + SourceTile.position.GetInDirection((Direction)(int)Position))) / 2 + new Vector3(0,1,0) + ModelOffset;
 
             // orientation has to be Calculated based on direction
-            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x,  go.transform.rotation.eulerAngles.y + 90 * ((int)SourceTile.position.GetDirectionTo(ConnectedTile.position)), 0);
+            go.transform.rotation = Quaternion.Euler(go.transform.rotation.eulerAngles.x,  go.transform.rotation.eulerAngles.y + 90 * ((int)Position + 1), 0);
         }
     }
 

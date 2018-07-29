@@ -67,6 +67,7 @@ public class Tile {
         // currently just simple
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
         go.transform.position = position;
+        go.name = position.ToString();
         myObject = go;
         return go;
     }
@@ -100,6 +101,22 @@ public class Tile {
             return CoverType.None;
         }
         return (CoverType)coverValue;
+    }
+    /// <summary>
+    /// returns a TileObject that is probly needed
+    /// </summary>
+    /// <param name="dir">The direction that is wanted</param>
+    /// <returns>TileObject</returns>
+    //TODO: make this prioritiese specific objects (ladders etc)
+    public BaseTileObject GetTileObjectInDirection(Direction dir)
+    {
+        BaseTileObject[] objs = TileObjects.GetAllObjectsInDirection(dir);
+
+        if (objs.Length>0)
+        {
+            return objs[0];
+        }
+        return null;
     }
 
 }

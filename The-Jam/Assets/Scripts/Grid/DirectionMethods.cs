@@ -4,8 +4,13 @@ using UnityEngine;
 
 public static class DirectionMethodes {
 
-	public static void Invert (this Direction dir)
+    /// <summary>
+    /// returns an inverted direction
+    /// </summary>
+    /// <param name="dir">the direction</param>
+    /// <returns>inverted direction</returns>
+	public static Direction Invert (this Direction dir)
     {
-        dir = (Direction)(((int)dir + 2) % 4);
+        return (Direction)(((int)dir + 2) % 4);
     }
 }

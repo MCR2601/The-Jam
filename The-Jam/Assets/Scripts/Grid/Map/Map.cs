@@ -26,14 +26,16 @@ public static class Map  {
         map[0, 2, 2] = new Tile(new SimpleCords(0, 2, 2)) { Passable = true };
         map[0, 2, 3] = new Tile(new SimpleCords(0, 2, 3)) { Passable = true };
 
+        map[1, 1, 1] = new Tile(new SimpleCords(1, 1, 1)) { Passable = true };
+
         map[1, 2, 0] = new Tile(new SimpleCords(1, 2, 0)) { Passable = true };
         map[1, 2, 1] = new Tile(new SimpleCords(1, 2, 1)) { Passable = true };
         map[1, 2, 1].TileObjects.PlaceObject(ObjectBox.GetObjectByName("CoverPartial"));
 
-        map[1, 3, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"),map[2,3,0]);
-        map[1, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"), map[2, 4, 0]);
+        map[1, 3, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"),Positioning.West);
+        map[1, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallHigh"),  Positioning.West);
 
-        map[4, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallLow"), map[4, 3, 0]);
+        map[4, 4, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("WallLow"), Positioning.South);
 
         map[3, 1, 0].TileObjects.PlaceObject(ObjectBox.GetObjectByName("CoverPartial"));
 
@@ -48,6 +50,8 @@ public static class Map  {
                 item.SpawnObject();
             }
         }
+
+        Direction d = Direction.South;
 
         UpdateExistancePassability();
         UpdateCover();
@@ -96,28 +100,52 @@ public static class Map  {
                     if (neighbour != null && neighbour.UnObstructed)
                     {
                         int difference = neighbour.position.h - item.position.h;
-                        Debug.Log("Difference: " + difference);
-                        if (difference == 0)
+
+                        // check if Traversal is legal by checking the TileObjects and its solidity
+
+                        int myCover = (int)item.TileObjects.CoverProvided(side.Key, true);
+                        int otherCover = (int)neighbour.TileObjects.CoverProvided(side.Key,false);
+
+                        if (otherCover == 2 || myCover == 2)
                         {
-                            item.Traversals[side.Key] = new Traversal(TraversalType.Walking, item, neighbour);
+                            // no traversal possible
+                            item.Traversals[side.Key] = new Traversal( TraversalType.None,item,neighbour);
                         }
                         else
                         {
-                            if (difference == 1)
+                            if (difference == 1 && otherCover == 0 && myCover == 0)
                             {
-                                item.Traversals[side.Key] = new Traversal(TraversalType.ClimbUp,item,neighbour);
+                                // just climb up
+                                item.Traversals[side.Key] = new Traversal(TraversalType.ClimbUp,item,neighbour);                                
                             }
                             else
                             {
-                                if (difference == -1)
+                                if (difference == 0)
                                 {
-                                    item.Traversals[side.Key] = new Traversal(TraversalType.ClimbDown, item, neighbour);
+                                    // flat ground, just check for vaults or stuff
+                                    if (otherCover == 1 || myCover == 1)
+                                    {
+                                        item.Traversals[side.Key] = new Traversal(TraversalType.Vault, item, neighbour);
+                                    }
+                                    else
+                                    {
+                                        item.Traversals[side.Key] = new Traversal(TraversalType.Walking, item, neighbour);
+                                    }
                                 }
                                 else
                                 {
-                                    if (difference < -1)
+                                    if (difference == -1)
                                     {
-                                        item.Traversals[side.Key] = new Traversal(TraversalType.DropDown, item, neighbour);
+                                        // climb down 1
+                                        item.Traversals[side.Key] = new Traversal(TraversalType.ClimbDown, item, neighbour);
+                                    }
+                                    else
+                                    {
+                                        if (difference < -1)
+                                        {
+                                            // drop down
+                                            item.Traversals[side.Key] = new Traversal(TraversalType.DropDown, item, neighbour);
+                                        }
                                     }
                                 }
                             }

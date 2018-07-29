@@ -109,6 +109,7 @@ public class TraversalData {
                         r = Color.cyan;
                         break;
                     case TraversalType.Vault:
+                        r = Color.yellow;
                         break;
                     case TraversalType.ClimbUp:
                         r = Color.red;
