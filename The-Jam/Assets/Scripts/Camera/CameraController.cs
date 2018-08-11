@@ -4,20 +4,22 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-    public Vector3 FocusTarget;
-    private Vector3 currFocus;
+    Transform center;
 
-    private Vector3 ViewDirection;
+    public GameObject p;
 
-    private bool MovedToTarget = true;
+    public float rotSpeed = 250;
+    public float damping = 10;
+    public float rotAngle = 45;
 
+    private float desiredRot;
+    private float desiredHight;
 
-    
 	// Use this for initialization
 	void Start () {
-        FocusTarget = new Vector3(0, 0, 0);
-        // TODO: Find a way to get the vector to the focuspoint
-
+        center = p.transform;
+        desiredRot = center.eulerAngles.y;
+        desiredHight = center.position.z;
 	}
 	
 	// Update is called once per frame
@@ -26,26 +28,41 @@ public class CameraController : MonoBehaviour {
         if (Input.anyKey)
         {
             Vector3 direction = new Vector3();
-            if (Input.GetKey( KeyCode.A))
+            if (Input.GetKey( KeyCode.S))
             {
                 direction = direction + new Vector3(-1, 0, 0);
             }
-            if (Input.GetKey(KeyCode.S))
+            if (Input.GetKey(KeyCode.D))
             {
                 direction = direction + new Vector3(0, 0,-1);
             }
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetKey(KeyCode.A))
             {
                 direction = direction + new Vector3(0, 0,1);
             }
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.W))
             {
                 direction = direction + new Vector3(1, 0,0);
             }
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                desiredRot += rotAngle;
+            }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                desiredRot -= rotAngle;
+            }
+            if (Input.GetAxis("Mouse ScrollWheel")>0f)
+            {
 
-            transform.Translate(direction * (Input.GetKey(KeyCode.LeftShift)?30:10) * Time.deltaTime,Space.World);
+                desiredHight += Input.GetAxis("Mouse ScrollWheel");
+            }
+            center.Translate(direction * (Input.GetKey(KeyCode.LeftShift) ? 30 : 10) * Time.deltaTime, Space.Self);
         }
+        var desiredRotQ = Quaternion.Euler(center.eulerAngles.x, desiredRot, center.eulerAngles.z);
+        center.rotation = Quaternion.Lerp(center.rotation, desiredRotQ, Time.deltaTime * damping);
+        center.position = Vector3.Lerp(center.position, new Vector3(center.position.x, desiredHight, center.position.z), Time.deltaTime * damping);
 
-
-	}
+        
+    }
 }
