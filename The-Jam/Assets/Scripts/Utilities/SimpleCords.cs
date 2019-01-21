@@ -150,7 +150,7 @@ public struct SimpleCords {
     {
         SimpleCords vector = other - this;
 
-        float angle = Mathf.Atan2(vector.x, vector.y);
+        float angle = (Mathf.Atan2(vector.y, vector.x) + (2 * Mathf.PI)) % (2 * Mathf.PI);
 
         if (angle < Mathf.PI/4 || angle > Mathf.PI/4 * 7)
         {

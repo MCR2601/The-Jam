@@ -77,7 +77,7 @@ public static class Map  {
             {
                 foreach (var side in item.Cover.GetAsDictionary())
                 {
-                    item.Cover[side.Key] = CheckCover(item, side.Key);
+                    item.Cover[side.Key] = CheckCover(item, side.Key);                    
                 }
                 Debug.Log(item.Cover.CoverValue());
             }
@@ -239,6 +239,7 @@ public static class Map  {
             // cover provided by the origin itself
             int thisCover = (int)origin.TileObjects.CoverProvided(dir, true);
 
+            
             // search for the highest Tile avaiable in that direction (max height 2)
             SimpleCords otherCords = origin.position.GetInDirection(dir, 1);
             int otherCover = 0;
@@ -251,6 +252,7 @@ public static class Map  {
                     h = -1;
                 }
             }
+
             coverValue = Mathf.Max(thisCover, otherCover);
         }
         coverValue = Mathf.Min(coverValue,2);
